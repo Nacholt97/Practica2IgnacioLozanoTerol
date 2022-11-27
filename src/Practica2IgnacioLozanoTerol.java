@@ -21,7 +21,7 @@ public class Practica2IgnacioLozanoTerol extends JFrame implements MouseListener
     CardLayout tarjetas;
     JPanel panelTarjetas;
     File directorio;
-
+JButton salir;
     JTextArea rutafinal;
     JLabel[] labels = new JLabel[4];
     String[] nombres = new String[]{"Nombre", "Apellidos", "Email", "Contraseña"};
@@ -213,9 +213,10 @@ public class Practica2IgnacioLozanoTerol extends JFrame implements MouseListener
 
                     campos = String.valueOf(directorio).split("\\\\");
 
-                    JButton salir = new JButton("Salir");
+                    salir = new JButton("Salir");
                     salir.setVisible(false);
                     salir.setBounds(340,150,100,30);
+                    salir.setBackground(new Color(252, 252, 141, 255));
                     salir.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -444,6 +445,7 @@ public class Practica2IgnacioLozanoTerol extends JFrame implements MouseListener
             this.comenzar.setBackground(Color.white);
         }
 
+
     }
 
     public void mouseExited(MouseEvent e) {
@@ -458,6 +460,7 @@ public class Practica2IgnacioLozanoTerol extends JFrame implements MouseListener
         if (e.getSource() == this.comenzar) {
             this.comenzar.setBackground(new Color(252, 252, 141, 255));
         }
+
 
     }
 
