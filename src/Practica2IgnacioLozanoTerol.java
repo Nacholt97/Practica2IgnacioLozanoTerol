@@ -36,8 +36,6 @@ public class Practica2IgnacioLozanoTerol extends JFrame implements MouseListener
 
     public Practica2IgnacioLozanoTerol() {
 
-        Un par de fuentes para los textos que vamos a usar
-
         Font fuenteBotones = new Font("italic", 0, 15);
         final Font fuenteResultados = new Font("Calibri", 0, 30);
 
