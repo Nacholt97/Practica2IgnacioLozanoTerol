@@ -19,40 +19,37 @@ import javax.swing.border.LineBorder;
 
 public class Practica2IgnacioLozanoTerol extends JFrame implements MouseListener, ItemListener, ActionListener {
     CardLayout tarjetas;
-    JPanel panelTarjetas;
-    File directorio;
-JButton salir;
+    File directorio,archivo;
     JTextArea rutafinal;
     JLabel[] labels = new JLabel[4];
     String[] nombres = new String[]{"Nombre", "Apellidos", "Email", "Contraseña"};
     JTextField[] textos = new JTextField[4];
     JEditorPane primeraTarjeta;
-    JPanel quintaTarjeta;
-    JPanel tercercaTarjeta;
-    JPanel segundaTarjeta;
-    JPanel cuartaTarjeta;
-    JButton anteriorTarjeta;
-    JButton siguienteTarjeta;
-    JPanel panelBoton;
-    JButton comenzar;
-    JComboBox pais;
-    JComboBox provincia;
+    JPanel segundaTarjeta,cuartaTarjeta,tercercaTarjeta,quintaTarjeta,panelTarjetas,panelBoton;
+    JButton comenzar,seleccionRuta,siguienteTarjeta,anteriorTarjeta,salir;
+    JComboBox pais,provincia;
     JPasswordField contrasena;
-
-    File archivo;
     JLabel[] resultados = new JLabel[5];
     JCheckBox volcarDatos;
-    JButton seleccionRuta;
     JFileChooser ruta;
     boolean valido;
 
     public Practica2IgnacioLozanoTerol() {
+
+        //Un par de fuentes para los textos que vamos a usar
+
         Font fuenteBotones = new Font("italic", 0, 15);
         final Font fuenteResultados = new Font("Calibri", 0, 30);
+
+        //Aquí nos declaramos un panel para los botones de siguiente y anterior, Border Layout para pegarlo a la parte inferior
+
         this.setLayout(new BorderLayout());
         this.panelBoton = new JPanel();
         this.panelBoton.setLayout(new FlowLayout(2, 20, 20));
         this.panelBoton.setVisible(false);
+
+        //El botón de siguiente tarjeta que añadimos al panelBoton
+
         this.siguienteTarjeta = new JButton("Siguiente  \ud83e\udc72");
         this.siguienteTarjeta.setFont(fuenteBotones);
         this.siguienteTarjeta.setBounds(10, 10, 20, 30);
@@ -61,16 +58,30 @@ JButton salir;
         this.siguienteTarjeta.addMouseListener(this);
         this.siguienteTarjeta.addActionListener(new ActionListener() {
 
+            //Aquí tenemos lo más importante el momento en el que se hace click en el botón siguinete.
+
             public void actionPerformed(ActionEvent event) {
+
+
+                //En el que caso de que la Segunda tarjeta sea visible, (los campos con el nombre, etc) tendrá unas validaciones
 
                 if (segundaTarjeta.isShowing()) {
 
+
+                    //Creamos dos patterns para el correo y la contraseña. El pattern del email lo más importante saber es que
+                    //obliga a poner un '@' y un '.' y al final mínimo dos caracteres después del punto.
+                    //El pattern de la contraseña dice que mínimo un número, una letra may, una letra min, un carácter especial y entre 8 y 16
 
                     String mensajeError = "";
                     Pattern patronEmail = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
                     Matcher coincideEmail = patronEmail.matcher(textos[2].getText());
                     Pattern patronContr = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=*]).{8,16}$");
                     Matcher coincideContr = patronContr.matcher(contrasena.getText());
+
+                    //Nos hacemos dos Matcher para ver si coinciden los campos introducidos, en el caso de que no coincidan
+                    //se pondrá el color de fondo rojo y añadiremos al mensaje de error el mensaje que el campo está mal.
+                    //En caso contrario volvemos a cambiar el color de los fondos
+
                     if (!coincideEmail.find()) {
                         mensajeError = mensajeError + " Mail no valido\n";
                         textos[2].setBackground(new Color(255, 190, 190, 255));
@@ -107,6 +118,9 @@ JButton salir;
                         textos[1].setBorder(new LineBorder(Color.black));
                     }
 
+                    //En el caso de que el mensaje de error tenga contenido, lo mostrara y no dejará pasar de tarjeta,
+                    //en caso contrario activa boolean para pasar de tarjeta
+
                     if (!mensajeError.equals("")) {
                         JOptionPane.showMessageDialog((Component) null, mensajeError);
                         valido = false;
@@ -115,13 +129,21 @@ JButton salir;
                     }
                 }
 
+
+                //En el caso de hacer click cuando se vea la tercera tarjeta (elección de país) haremos las siguientes cosas
+
                 if (tercercaTarjeta.isShowing()) {
+
+                    //Por si el usuario se mueve aleatoriamente por el formulario reinicio los labels donde va a estar la información
+                    //para que no se creen mas labels
 
                     for (int ix = 0; ix < resultados.length; ++ix) {
                         resultados[ix].setText("");
                     }
 
                     String[] strings = new String[]{textos[0].getText(), textos[1].getText(), textos[2].getText(), (String) pais.getSelectedItem(), (String) provincia.getSelectedItem()};
+
+                    //Aquí coloco los labels donde quiera al poner el Layout en null
 
                     for (int i = 0; i < 3; ++i) {
                         JLabel var10000 = resultados[i];
@@ -130,6 +152,8 @@ JButton salir;
                         resultados[i].setBounds(50, 10 + i * 40, 400, 40);
                         cuartaTarjeta.add(resultados[i]);
                     }
+
+                    //Aquí dependiendo de lo que haya seleccionado el usuario (España o EEUU) cambio provincia o país
 
                     resultados[3].setText("País: " + strings[3]);
                     cuartaTarjeta.add(resultados[3]);
@@ -141,6 +165,8 @@ JButton salir;
                         resultados[4].setText("Estado: " + strings[4]);
                         cuartaTarjeta.add(resultados[4]);
                     }
+
+                    //Aquí el check box con el botón para elegir ruta
 
                     resultados[4].setBounds(50, 170, 400, 40);
                     volcarDatos = new JCheckBox();
@@ -159,6 +185,8 @@ JButton salir;
                             archivo = new File(String.valueOf(directorio));
                             FileWriter fw = null;
 
+                            //Veo si el archivo ya existe o no para avisar al usuario si a sobreescerito el fichero o ha creado uno nuevo
+
                             try {
                                 if (archivo.exists()) {
                                     JOptionPane.showMessageDialog(cuartaTarjeta, "Ha sobreescrito el archivo");
@@ -168,6 +196,8 @@ JButton salir;
                                 else {
                                     JOptionPane.showMessageDialog(cuartaTarjeta, "Archivo creado");
                                 }
+
+                                //BufferedWritter para escribir en el txt con la ruta seleccionada por el ususario
 
                                 archivo.createNewFile();
                                 fw = new FileWriter(archivo);
@@ -201,6 +231,9 @@ JButton salir;
                     cuartaTarjeta.add(seleccionRuta);
                 }
 
+
+                //En la última tarjeta veo si el fichero se ha creado bien y muestro un mensaje u otro
+
                 if (cuartaTarjeta.isShowing()) {
 
                     rutafinal.setText("");
@@ -210,6 +243,10 @@ JButton salir;
 
                     rutafinal.setBounds(30, 20, 1000,120);
                     String campos[];
+
+                    //Hago split a la ruta y selecciono el último valor y veo si contiene un .txt, en caso de que no lo tenga
+                    //el fichero se ha creado mal y no le dejo acabar el formulario, le digo que vuelva y elija bien el fichero
+
 
                     campos = String.valueOf(directorio).split("\\\\");
 
@@ -252,6 +289,9 @@ JButton salir;
 
             }
         });
+
+        //Aquí me creo el botón de anterior tarjeta que simplemente va hacia la anterior
+
         this.anteriorTarjeta = new JButton("\ud83e\udc70  Anterior");
         this.anteriorTarjeta.setFont(fuenteBotones);
         this.anteriorTarjeta.setBounds(100, 100, 20, 30);
@@ -280,6 +320,9 @@ JButton salir;
 
             }
         });
+
+        //Añado los dos botones al panel
+
         this.panelBoton.add(this.anteriorTarjeta);
         this.panelBoton.add(this.siguienteTarjeta);
         this.panelBoton.setBackground(new Color(253, 253, 172, 255));
@@ -288,6 +331,9 @@ JButton salir;
         this.tarjetas = new CardLayout();
         this.panelTarjetas = new JPanel();
         this.panelTarjetas.setLayout(this.tarjetas);
+
+        //Me creo la primera tarjeta de bienvenida con las instrucciones del formulario
+
         this.primeraTarjeta = new JEditorPane();
         this.primeraTarjeta.setEditable(false);
         this.primeraTarjeta.setBackground(new Color(253, 253, 172, 255));
@@ -296,11 +342,14 @@ JButton salir;
         this.primeraTarjeta.setText("<style>        body {            text-align: center;}\n    </style></head><body> " +
                 "   <h1>\n¡Bienvenido!</h1><h2>En este formulario encontrarás cuatro pestañas</h2>" +
                 "<p>En la primera pestaña tendrás que rellenar los datos, No puedes dejar campos vacíos, tiene que ser un email valido\n" +
-                "y la contraseña de 8 a 16 caracteres, una mayúscula una minúscula y un número</p><p>En la segunda pestaña " +
-                "tendrás dos cajas, la primera para seleccionar el país y la segunda para seleccionar la provincia/Estado, dependiendo" +
-                "de la elección del país</p><p>En la tercera pestaña estarán todos tus datos, confirma que estén bien y selecciona un directorio donde" +
-                "guardarlos</p><p>En la ultima pestaña verás si se ha guardado bien el archivo o no, en casi negativo vuelva para " +
-                "guardarlo bien</p></body>");
+                "y la contraseña de 8 a 16 caracteres, una mayúscula una minúscula y un número.</p><p>En la segunda pestaña " +
+                "tendrás dos cajas, la primera para seleccionar el país y la segunda para seleccionar la provincia/Estado, dependiendo " +
+                "de la elección del país.</p><p>En la tercera pestaña estarán todos tus datos, confirma que estén bien y selecciona un directorio donde " +
+                "guardarlos.</p><p>En la ultima pestaña verás si se ha guardado bien el archivo o no, en casi negativo vuelva para " +
+                "guardarlo bien.</p></body>");
+
+        //Añado el logo al formulario
+
         JLabel foto = new JLabel();
         foto.setBounds(10, 10, 100, 100);
         Image img = (new ImageIcon(this.getClass().getResource("/logo.png"))).getImage();
@@ -313,6 +362,9 @@ JButton salir;
         this.comenzar.setBounds(640, 45, 100, 30);
         this.comenzar.setBackground(new Color(252, 252, 141, 255));
         this.comenzar.addMouseListener(this);
+
+        //En el botón comenzar inicializo varías variables
+
         this.comenzar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 tarjetas.show(panelTarjetas, "Datos");
@@ -329,6 +381,10 @@ JButton salir;
 
             }
         });
+
+
+        //Aquí creo la segunda tarjeta donde coloco los labels y textos
+
         this.primeraTarjeta.add(this.comenzar);
         this.segundaTarjeta = new JPanel();
         this.segundaTarjeta.setBackground(new Color(253, 253, 172, 255));
@@ -364,26 +420,32 @@ JButton salir;
 
 
 
+
+
         this.tercercaTarjeta = new JPanel();
         this.tercercaTarjeta.setLayout(new GridBagLayout());
         this.tercercaTarjeta.setBackground(new Color(253, 253, 172, 255));
+
+        //En init pais tenemos la inicialización de las dos cajas con el pais y las provincias o estados
+
         this.initPais();
 
+
+        //La cuarta tarjeta la inicializo en el boton siguiente tarjeta como ya hemos visto arriba
 
         this.cuartaTarjeta = new JPanel();
         this.cuartaTarjeta.setLayout((LayoutManager) null);
         this.resultados = new JLabel[5];
         this.cuartaTarjeta.setBackground(new Color(253, 253, 172, 255));
 
+        //La quinta tarjeta igual, al depender de la anterior tarjeta
 
 
         this.quintaTarjeta = new JPanel();
         this.quintaTarjeta.setBackground(new Color(253, 253, 172, 255));
         this.quintaTarjeta.setLayout(null);
 
-
-
-
+        //Añado todas las tarjetas al grupo de tarjetas
 
         this.panelTarjetas.add(this.primeraTarjeta, "Bienvenida");
         this.panelTarjetas.add(this.segundaTarjeta, "Datos");
@@ -394,6 +456,7 @@ JButton salir;
         this.add(this.panelTarjetas, "Center");
         this.initPantalla();
     }
+
 
     private void initPais() {
         String a = "España";
@@ -410,6 +473,8 @@ JButton salir;
         this.pais.addItem(b);
         this.provincia.addItem(".");
     }
+
+    //Inicializo pantalla
 
     private void initPantalla() {
         this.setTitle("Practica2IgnacioLozanoTerol");
@@ -432,6 +497,8 @@ JButton salir;
     public void mouseReleased(MouseEvent e) {
     }
 
+    //Hovers para hacer más visual el formulario. Hover de entrada
+
     public void mouseEntered(MouseEvent e) {
         if (e.getSource() == this.siguienteTarjeta) {
             this.siguienteTarjeta.setBackground(Color.white);
@@ -447,6 +514,8 @@ JButton salir;
 
 
     }
+
+    //Hover de salida
 
     public void mouseExited(MouseEvent e) {
         if (e.getSource() == this.siguienteTarjeta) {
@@ -464,6 +533,9 @@ JButton salir;
 
     }
 
+    //Dependiendo del campo seleccionado en país tendremos otros campos en la segunda caja, este método limpia todos los campos
+    //y vuelve a leer el fichero correspondiente añadiendo el contenido a la caja
+
     private void cambiarProvincias(String pais2) throws IOException {
         this.provincia.removeAllItems();
         FileReader fr;
@@ -472,6 +544,8 @@ JButton salir;
         } else {
             fr = new FileReader("C:\\Users\\nacho\\IdeaProjects\\Practica2IgnacioLozanoTerol\\src\\estados.txt");
         }
+
+        //Leo los archivos con BufferedReader
 
         BufferedReader br = new BufferedReader(fr);
 
@@ -482,6 +556,9 @@ JButton salir;
 
         br.close();
     }
+
+
+    //En el itemChanged es donde llamo al metodo cambiar provincias, que es cuando cambia el pais de España a EEUU
 
     public void itemStateChanged(ItemEvent e) {
         if (e.getSource() == this.pais) {
