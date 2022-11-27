@@ -70,7 +70,7 @@ public class Practica2IgnacioLozanoTerol extends JFrame implements MouseListener
 
                     //Creamos dos patterns para el correo y la contraseña. El pattern del email lo más importante saber es que
                     //obliga a poner un '@' y un '.' y al final mínimo dos caracteres después del punto.
-                    //El pattern de la contraseña dice que mínimo un número, una letra may, una letra min, un carácter especial y entre 8 y 16
+                    //El pattern de la contraseña dice que mínimo un número, una letra may, una letra min, un carácter especial y entre 8 y 16.
 
                     String mensajeError = "";
                     Pattern patronEmail = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
